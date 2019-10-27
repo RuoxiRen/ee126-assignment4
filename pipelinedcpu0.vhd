@@ -274,6 +274,7 @@ port(
      clk           : in STD_LOGIC; -- Propogate AddressIn to AddressOut on rising edge of clock
      rst           : in STD_LOGIC;
      write_enable  : in STD_LOGIC;
+     addressIn     : in STD_LOGIC_VECTOR(31 downto 0);
      WBsigIn       : in STD_LOGIC_VECTOR(1 downto 0);
      MsigIn        : in STD_LOGIC_VECTOR(2 downto 0);
   
@@ -286,7 +287,7 @@ port(
      WBRegIn       : in  STD_LOGIC_VECTOR(4 downto 0);
   
   
-  
+     addressOut    : out STD_LOGIC_VECTOR(31 downto 0):=x"00000000";
      WBsigOut      : out STD_LOGIC_VECTOR(1 downto 0):="00";
      branchOut     : out STD_LOGIC:='0';
      MemRegOut     : out STD_LOGIC:='0';
@@ -309,6 +310,7 @@ port(
      clk           : in  STD_LOGIC; -- Propogate AddressIn to AddressOut on rising edge of clock
      rst           : in  STD_LOGIC;
      write_enable  : in  STD_LOGIC;
+     addressIn     : in  STD_LOGIC_VECTOR(31 downto 0);
      WBsigIn       : in  STD_LOGIC_VECTOR(1 downto 0);
  
      readdataIn    : in  STD_LOGIC_VECTOR(31 downto 0);  
@@ -316,6 +318,7 @@ port(
  
      WBRegIn       : in  STD_LOGIC_VECTOR(4 downto 0);
 
+     addressOut    : out STD_LOGIC_VECTOR(31 downto 0):=x"00000000";
      RegWriteOut   : out STD_LOGIC:='0';
      MemtoRegOut   : out STD_LOGIC:='0';
 
@@ -331,7 +334,7 @@ end component;
 
 
 signal PCenSt : STD_LOGIC;
-signal PCin , PCout , PCadd4IF , PCadd4ID , PCadd4EX : STD_LOGIC_VECTOR(31 downto 0);
+signal PCin , PCout , PCadd4IF , PCadd4ID , PCadd4EX , PCadd4MEM , PCadd4WB : STD_LOGIC_VECTOR(31 downto 0);
 signal InstructionIF , InstructionID : STD_LOGIC_VECTOR(31 downto 0);
 signal RegDstID , RegDstEX , BranchID , BranchMEM , MemReadID , MemtoRegID , MemtoRegMEM , MemtoRegWB , MemWriteID , MemWriteMEM , ALUSrcID , ALUSrcEX , RegWriteID , RegWriteWB , JumpID: STD_LOGIC;
 signal WriteRegWB , WriteRegEX , WriteRegMEM : STD_LOGIC_VECTOR(4 downto 0);
@@ -372,7 +375,7 @@ U5: CPUControl port map(InstructionID(31 downto 26),RegDstID,BranchID,MemReadID,
 U6: registers port map(InstructionID(25 downto 21),InstructionID(20 downto 16),WriteRegWB,WritedataWB,RegWriteWB,clk,ReadData1ID,ReadData2ID,tmpReg,savedReg);
 U7: SignExtend port map(InstructionID(15 downto 0),ImmID);
 
-U8: IDEXReg port map(clk,rst,'1',RegDstID,BranchID,MemReadID,MemtoRegID,MemWriteID,MemWriteID,ALUSrcID,RegWriteID,ALUOpID,PCadd4ID,ReadData1ID,ReadData2ID,ImmID,InstructionID(20 downto 16),InstructionID(15 downto 11),WBsigEX,MsigEX,RegDstEX,ALUSrcEX,ALUOpEX,PCadd4EX,ReadData1EX,ReadData2EX,ImmEX,Ins2016EX,Ins1511EX);
+U8: IDEXReg port map(clk,rst,'1',RegDstID,BranchID,MemReadID,MemtoRegID,MemWriteID,ALUSrcID,RegWriteID,ALUOpID,PCadd4ID,ReadData1ID,ReadData2ID,ImmID,InstructionID(20 downto 16),InstructionID(15 downto 11),WBsigEX,MsigEX,RegDstEX,ALUSrcEX,ALUOpEX,PCadd4EX,ReadData1EX,ReadData2EX,ImmEX,Ins2016EX,Ins1511EX);
 
 -- EX
 
@@ -383,7 +386,7 @@ U12: ALU port map(ReadData1EX,ALUbEX,ALUOperationEX,ALUResEX,ALUzeroEX,ALUoverfl
 U13: ALUControl port map(ALUOpEX,ImmEX(5 downto 0),ALUOperationEX);
 U14: MUX5 port map(Ins2016EX,Ins1511EX,RegDstEX,WriteRegEX);
 
-U15: EXMEMReg port map(clk,rst,'1',WBsigEX,MsigEX,BranchAddrEX,ALUzeroEX,ALUResEX,ReadData2EX,WriteRegEX,WBsigMEM,BranchMEM,MemtoRegMEM,MemWriteMEM,BranchAddrMEM,zeroMEM,ALUResMEM,ReadData2MEM,WriteRegMEM);
+U15: EXMEMReg port map(clk,rst,'1',PCadd4EX,WBsigEX,MsigEX,BranchAddrEX,ALUzeroEX,ALUResEX,ReadData2EX,WriteRegEX,PCadd4MEM,WBsigMEM,BranchMEM,MemtoRegMEM,MemWriteMEM,BranchAddrMEM,zeroMEM,ALUResMEM,ReadData2MEM,WriteRegMEM);
 
 
 
@@ -391,7 +394,7 @@ U15: EXMEMReg port map(clk,rst,'1',WBsigEX,MsigEX,BranchAddrEX,ALUzeroEX,ALUResE
 
 U16: AND2 port map(BranchMEM,zeroMEM,BranchSigMEM);
 U17: DMEM port map(ReadData2MEM,ALUResMEM,MemtoRegMEM,MemWriteMEM,clk,MEMRDataMEM,MEMContents);
-U18: MEMWBReg port map(clk,rst,'1',WBsigMEM,MEMRDataMEM,ALUResMEM,WriteRegMEM,RegWriteWB,MemtoRegWB,MEMRDataWB,ALUResWB,WriteRegWB)
+U18: MEMWBReg port map(clk,rst,'1',PCadd4MEM,WBsigMEM,MEMRDataMEM,ALUResMEM,WriteRegMEM,PCadd4WB,RegWriteWB,MemtoRegWB,MEMRDataWB,ALUResWB,WriteRegWB);
 
 
 
@@ -410,7 +413,6 @@ U19: MUX32WB port map(ALUResWB,MEMRDataWB,MemtoRegWB,WritedataWB);
 
 
 
-DEBUG_PC <= PCout;
 PCenSt <='1';
 DEBUG_INSTRUCTION <= InstructionID;
 DEBUG_TMP_REGS <= tmpReg;
@@ -420,16 +422,16 @@ DEBUG_MEM_CONTENTS <= MEMContents;
 DEBUG_PC <= PCout;
 DEBUG_PCPlus4_ID <= PCadd4ID;
 DEBUG_PCPlus4_EX <= PCadd4EX;
-DEBUG_PCPlus4_MEM <= PCin;
-DEBUG_PCPlus4_WB <= PCin + X"00000004";
+DEBUG_PCPlus4_MEM <= PCadd4MEM;
+DEBUG_PCPlus4_WB <= PCadd4WB;
 -- instruction is a store.
 DEBUG_MemWrite <= MemWriteID;
 DEBUG_MemWrite_EX <= MsigEX(0);
 DEBUG_MemWrite_MEM <= MemWriteMEM;
 -- instruction writes the regfile.
 DEBUG_RegWrite <= RegWriteID;
-DEBUG_RegWrite_EX <= WBsigEX;
-DEBUG_RegWrite_MEM <= WBsigMEM;
+DEBUG_RegWrite_EX <= WBsigEX(1);
+DEBUG_RegWrite_MEM <= WBsigMEM(1);
 DEBUG_RegWrite_WB <= RegWriteWB;
 -- instruction is a branch or a jump.
 DEBUG_Branch <= BranchID;

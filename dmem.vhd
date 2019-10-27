@@ -35,19 +35,19 @@ begin
          dmemBytes(0)  <= X"00";
          dmemBytes(1)  <= X"00";
          dmemBytes(2)  <= X"00";
-         dmemBytes(3)  <= X"02";
+         dmemBytes(3)  <= X"01";
          dmemBytes(4)  <= X"00";  
          dmemBytes(5)  <= X"00";  
          dmemBytes(6)  <= X"00";  
-         dmemBytes(7)  <= X"00";
+         dmemBytes(7)  <= X"02";
          dmemBytes(8)  <= X"00";
          dmemBytes(9)  <= X"00";
          dmemBytes(10)  <= X"00";
-         dmemBytes(11)  <= X"00";
+         dmemBytes(11)  <= X"03";
          dmemBytes(12)  <= X"00";  
          dmemBytes(13)  <= X"00";  
          dmemBytes(14)  <= X"00";  
-         dmemBytes(15)  <= X"00";
+         dmemBytes(15)  <= X"04";
 
          first := false; -- Don't initialize the next time this process runs
       end if;

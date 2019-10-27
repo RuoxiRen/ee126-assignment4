@@ -21,7 +21,7 @@ end ALU;
 architecture alu_behaviour of ALU is
 
 signal ALU_result : STD_LOGIC_VECTOR(31 downto 0);
-signal tmp        : STD_LOGIC_VECTOR(32 downto 0):=X"00000000";
+signal tmp        : STD_LOGIC_VECTOR(32 downto 0):="000000000000000000000000000000000";
 
 begin 
 	process (a,b,operation)

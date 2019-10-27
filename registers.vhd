@@ -37,14 +37,14 @@ begin
      begin
           if(first) then
                reg_array(0) <= X"00000000";
-               reg_array(8) <= X"00000000";
-               reg_array(9) <= X"00000001";
-               reg_array(10) <= X"00000004";
-               reg_array(11) <= X"00000008";
-               reg_array(16) <= X"00000015";
-               reg_array(17) <= X"00000007";
+               reg_array(8) <= X"00000008";
+               reg_array(9) <= X"00000004";
+               reg_array(10) <= X"00000002";
+               reg_array(11) <= X"00000000";
+               reg_array(16) <= X"CEA4126C";
+               reg_array(17) <= X"1009AC83";
                reg_array(18) <= X"00000000";
-               reg_array(19) <= X"00000016";
+               reg_array(19) <= X"00000000";
                first := false;
           end if;
 

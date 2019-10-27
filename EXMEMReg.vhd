@@ -8,6 +8,7 @@ port(
      clk           : in STD_LOGIC; -- Propogate AddressIn to AddressOut on rising edge of clock
      rst           : in STD_LOGIC;
      write_enable  : in STD_LOGIC;
+     addressIn     : in STD_LOGIC_VECTOR(31 downto 0);
      WBsigIn       : in STD_LOGIC_VECTOR(1 downto 0);
      MsigIn        : in STD_LOGIC_VECTOR(2 downto 0);
   
@@ -20,7 +21,7 @@ port(
      WBRegIn       : in  STD_LOGIC_VECTOR(4 downto 0);
   
   
-  
+     addressOut    : out STD_LOGIC_VECTOR(31 downto 0):=x"00000000";
      WBsigOut      : out STD_LOGIC_VECTOR(1 downto 0):="00";
      branchOut     : out STD_LOGIC:='0';
      MemRegOut     : out STD_LOGIC:='0';
@@ -56,6 +57,7 @@ begin
      
         WBRegOut <= "00000";
     elsif(clk'event and clk = '1' and write_enable = '1')then
+        addressOut <= addressIn;
         WBsigOut <= WBsigIn;
 
         branchDstOut<= branchDstIn;

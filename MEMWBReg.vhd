@@ -7,6 +7,7 @@ port(
      clk           : in  STD_LOGIC; -- Propogate AddressIn to AddressOut on rising edge of clock
      rst           : in  STD_LOGIC;
      write_enable  : in  STD_LOGIC;
+     addressIn     : in  STD_LOGIC_VECTOR(31 downto 0);
      WBsigIn       : in  STD_LOGIC_VECTOR(1 downto 0);
  
      readdataIn    : in  STD_LOGIC_VECTOR(31 downto 0);  
@@ -14,6 +15,7 @@ port(
  
      WBRegIn       : in  STD_LOGIC_VECTOR(4 downto 0);
 
+     addressOut    : out STD_LOGIC_VECTOR(31 downto 0):=x"00000000";
      RegWriteOut   : out STD_LOGIC:='0';
      MemtoRegOut   : out STD_LOGIC:='0';
 
@@ -27,6 +29,7 @@ port(
 end MEMWBReg;
 
 architecture MEMWB_arch of MEMWBReg is
+begin
 	process(clk,rst,write_enable) is
 	begin
 	      if rst = '1' then
@@ -38,6 +41,7 @@ architecture MEMWB_arch of MEMWBReg is
 	          
 	          WBRegOut <= "00000";
 	      elsif(clk'event and clk = '1' and write_enable = '1')then
+                  addressOut <= addressIn;
 	          RegWriteOut <= WBsigIn(1);
 	          MemtoRegOut <= WBsigIn(0);
           

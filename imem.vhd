@@ -23,7 +23,7 @@ begin
 	variable addr:integer;
 	begin
 		if (first) then
-			imemBytes(0) <= X"10";
+			imemBytes(0) <= X"01";
 			imemBytes(1) <= X"09";
 			imemBytes(2) <= X"50";
 			imemBytes(3) <= X"20";
